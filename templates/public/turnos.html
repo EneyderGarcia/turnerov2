@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Turnos - Pantalla Pública</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --highlight-color: #e74c3c;
+            --next-turn-color: #27ae60;
+            --text-light: #ffffff;
+            --text-dark: #2c3e50;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --header-bg: #2c3e50;
+        }
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #4a6580 100%);
+        }
+        
+        .main-container {
+            min-height: 100vh;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header-section {
+            background: var(--header-bg);
+            padding: 0.8rem 0;
+            width: 100%;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 10;
+        }
+        
+        .header-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-light);
+            margin: 0;
+        }
+        
+        .header-subtitle {
+            font-size: 1.3rem;
+            font-weight: 300;
+            color: var(--text-light);
+            opacity: 0.9;
+        }
+        
+        .content-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            width: 100%;
+        }
+        
+        .current-turn-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+        
+        .card-header-custom {
+            background: var(--accent-color) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1.2rem;
+        }
+        
+        .card-title-custom {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--text-light);
+            text-align: center;
+        }
+        
+        .turn-display {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem; /* Reducido el padding vertical */
+            min-height: 30vh; /* Reducida la altura mínima */
+            background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+        }
+        
+        .turn-number {
+            font-weight: 900;
+            margin: 0;
+            line-height: 1;
+            transition: all 0.5s ease;
+            font-size: 12vw; /* Reducido el tamaño de fuente */
+            color: var(--highlight-color);
+            text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-text {
+            font-weight: 600;
+            margin: 1rem 0;
+            font-size: 2.2rem; /* Reducido el tamaño de fuente */
+            color: var(--primary-color);
+        }
+        
+        .info-subtext {
+            font-weight: 500;
+            opacity: 0.9;
+            font-size: 1.8rem; /* Reducido el tamaño de fuente */
+            color: var(--primary-color);
+        }
+        
+        .next-turn-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            max-width: 350px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .next-turn-card .card-header-custom {
+            background: var(--next-turn-color) !important;
+        }
+        
+        .next-turn-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .next-turn-number {
+            font-weight: 800;
+            font-size: 3.5rem;
+            color: var(--next-turn-color);
+        }
+        
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--header-bg);
+            color: var(--text-light);
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            z-index: 10;
+        }
+        
+        .marquee {
+            white-space: nowrap;
+            overflow: hidden;
+            position: relative;
+            flex-grow: 1;
+            margin: 0 1rem;
+        }
+        
+        .marquee span {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 20s linear infinite;
+        }
+        
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+        
+        @keyframes highlight {
+            0% { 
+                transform: scale(1);
+                color: var(--highlight-color);
+            }
+            50% { 
+                transform: scale(1.15);
+                color: #ff6b6b;
+                text-shadow: 0 0 20px rgba(255, 107, 107, 0.4);
+            }
+            100% { 
+                transform: scale(1);
+                color: var(--highlight-color);
+            }
+        }
+        
+        .turn-changing {
+            animation: highlight 0.8s ease;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Media queries responsivos */
+        @media (max-width: 1400px) {
+            .turn-number {
+                font-size: 11vw;
+            }
+            
+            .info-text {
+                font-size: 2rem;
+            }
+            
+            .info-subtext {
+                font-size: 1.6rem;
+            }
+        }
+        
+        @media (max-width: 1200px) {
+            .header-title {
+                font-size: 1.9rem;
+            }
+            
+            .header-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .card-title-custom {
+                font-size: 1.6rem;
+            }
+            
+            .turn-number {
+                font-size: 10vw;
+            }
+            
+            .info-text {
+                font-size: 1.8rem;
+            }
+            
+            .info-subtext {
+                font-size: 1.5rem;
+            }
+            
+            .next-turn-number {
+                font-size: 3rem;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .turn-number {
+                font-size: 11vw;
+            }
+            
+            .info-text {
+                font-size: 1.6rem;
+            }
+            
+            .info-subtext {
+                font-size: 1.4rem;
+            }
+            
+            .next-turn-number {
+                font-size: 2.8rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 1.6rem;
+            }
+            
+            .header-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .card-title-custom {
+                font-size: 1.4rem;
+            }
+            
+            .turn-number {
+                font-size: 14vw;
+            }
+            
+            .info-text {
+                font-size: 1.5rem;
+            }
+            
+            .info-subtext {
+                font-size: 1.3rem;
+            }
+            
+            .next-turn-number {
+                font-size: 2.5rem;
+            }
+            
+            .turn-display {
+                padding: 1.5rem 0.8rem;
+                min-height: 25vh;
+            }
+            
+            .content-container {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .header-title {
+                font-size: 1.4rem;
+            }
+            
+            .header-subtitle {
+                font-size: 1rem;
+            }
+            
+            .card-title-custom {
+                font-size: 1.2rem;
+            }
+            
+            .turn-number {
+                font-size: 18vw;
+            }
+            
+            .info-text {
+                font-size: 1.4rem;
+            }
+            
+            .info-subtext {
+                font-size: 1.2rem;
+            }
+            
+            .next-turn-number {
+                font-size: 2.2rem;
+            }
+            
+            .status-bar {
+                flex-direction: column;
+                text-align: center;
+                padding: 0.5rem;
+            }
+            
+            .marquee {
+                margin: 0.3rem 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header-section text-center">
+            <h1 class="header-title mb-1">
+                <i class="fas fa-ticket-alt me-2"></i>Sistema de Turnos
+            </h1>
+            <p class="header-subtitle mb-0">Centro Tecnológico Ricardo Morales Avilez</p>
+        </div>
+
+        <div class="content-container">
+            <div class="current-turn-card pulse">
+                <div class="card-header-custom text-center">
+                    <h2 class="card-title-custom">
+                        <i class="fas fa-star me-2"></i>TURNO ACTUAL
+                    </h2>
+                </div>
+                <div class="card-body turn-display">
+                    <div id="turno-actual" class="w-100 text-center">
+                        <div class="turn-number mb-2" id="numero-turno">0</div>
+                        
+                        <div class="info-text mb-2" id="mesa-info">Esperando primer turno...</div>
+                        
+                        <div class="info-subtext" id="docente-info"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="next-turn-card">
+                <div class="card-header-custom text-white text-center py-2">
+                    <h4 class="card-title-custom mb-0">
+                        <i class="fas fa-forward me-2"></i>Próximo Turno
+                    </h4>
+                </div>
+                <div class="card-body text-center py-3">
+                    <div class="next-turn-number" id="proximo-turno">1</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="status-bar">
+            <div><i class="fas fa-clock me-1"></i> <span id="current-time">00:00:00</span></div>
+            <div class="marquee">
+                <span>Bienvenidos al Centro Tecnológico Ricardo Morales Avilez • Por favor espere su turno •</span>
+            </div>
+            <div><i class="fas fa-user me-1"></i> <span id="current-date">01/01/2023</span></div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let ultimoTurnoConocido = 0;
+        let audioContext = null;
+
+        function updateDateTime() {
+            const now = new Date();
+            document.getElementById('current-time').textContent = now.toLocaleTimeString();
+            document.getElementById('current-date').textContent = now.toLocaleDateString();
+        }
+        
+        // Actualizar fecha y hora cada segundo
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        function inicializarAudio() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                console.log("AudioContext inicializado correctamente");
+            } catch (e) {
+                console.error("Error inicializando AudioContext:", e);
+            }
+        }
+
+        function playCampanita() {
+            if (!audioContext) {
+                inicializarAudio();
+                if (!audioContext) return;
+            }
+            
+            try {
+                const oscillator1 = audioContext.createOscillator();
+                const oscillator2 = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator1.connect(gainNode);
+                oscillator2.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator1.type = 'sine';
+                oscillator2.type = 'sine';
+                
+                oscillator1.frequency.setValueAtTime(784, audioContext.currentTime);  
+                oscillator2.frequency.setValueAtTime(1046, audioContext.currentTime); 
+                
+                gainNode.gain.setValueAtTime(0.8, audioContext.currentTime);
+                
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
+                
+                oscillator1.start(audioContext.currentTime);
+                oscillator2.start(audioContext.currentTime);
+                
+                oscillator1.stop(audioContext.currentTime + 1.5);
+                oscillator2.stop(audioContext.currentTime + 1.5);
+                
+            } catch (e) {
+                console.log('Error reproduciendo campanita:', e);
+                
+                try {
+                    const audio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ==');
+                    audio.play();
+                } catch (err) {
+                    console.log('Error en fallback de audio:', err);
+                }
+            }
+        }
+
+        function actualizarPantalla() {
+            fetch('/api/estado_sistema')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('proximo-turno').textContent = data.proximo_turno;
+                }
+            })
+            .catch(error => {
+                console.error('Error al cargar estado del sistema:', error);
+            });
+        }
+
+        function actualizarTurnoActual() {
+            fetch('/api/ultimo_turno')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const ultimoTurno = data.ultimo_turno;
+                    
+                    if (ultimoTurno.turno > 0 && ultimoTurno.turno !== ultimoTurnoConocido) {
+                        playCampanita();
+
+                        document.getElementById('numero-turno').classList.add('turn-changing');
+                        setTimeout(() => {
+                            document.getElementById('numero-turno').classList.remove('turn-changing');
+                        }, 1000);
+                        
+                        ultimoTurnoConocido = ultimoTurno.turno;
+                    }
+                    
+                    document.getElementById('numero-turno').textContent = ultimoTurno.turno;
+                    
+                    if (ultimoTurno.turno > 0) {
+                        document.getElementById('mesa-info').textContent = `Mesa ${ultimoTurno.mesa_numero}`;
+                        document.getElementById('docente-info').textContent = ultimoTurno.docente;
+                    } else {
+                        document.getElementById('mesa-info').textContent = 'Esperando primer turno...';
+                        document.getElementById('docente-info').textContent = '';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error al cargar último turno:', error);
+            });
+        }
+
+        document.addEventListener('click', function() {
+            if (!audioContext) {
+                inicializarAudio();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            inicializarAudio();
+            actualizarPantalla();
+            actualizarTurnoActual();
+
+            setInterval(actualizarPantalla, 3000);
+            setInterval(actualizarTurnoActual, 3000);
+        });
+    </script>
+</body>
+</html>

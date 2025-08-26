@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+
+{% block title %}Panel de Administración{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h4 fw-bold text-primary mb-0"><i class="fas fa-tachometer-alt me-2"></i>Panel de Administración</h2>
+        <div>
+            <a href="{{ url_for('admin_mesas') }}" class="btn btn-primary btn-sm me-2 rounded-pill">
+                <i class="fas fa-desktop me-1"></i>Gestión de Mesas
+            </a>
+            <a href="{{ url_for('admin_usuarios') }}" class="btn btn-primary btn-sm me-2 rounded-pill">
+                <i class="fas fa-users me-1"></i>Gestión de Usuarios
+            </a>
+            <a href="{{ url_for('public_turnos') }}" class="btn btn-info btn-sm rounded-pill" target="_blank">
+                <i class="fas fa-display me-1"></i>Ver Pantalla Pública
+            </a>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card border-0 shadow-lg rounded-4 bg-gradient-primary text-white h-100">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-ticket-alt fa-3x opacity-75"></i>
+                    </div>
+                    <h5 class="card-title fw-light">Próximo Turno</h5>
+                    <h2 class="display-4 fw-bold mt-2" id="proximo-turno">{{ proximo_turno }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card border-0 shadow-lg rounded-4 bg-gradient-success text-white h-100">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-list-ol fa-3x opacity-75"></i>
+                    </div>
+                    <h5 class="card-title fw-light">Total Turnos</h5>
+                    <h2 class="display-4 fw-bold mt-2" id="total-turnos">{{ total_turnos }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card border-0 shadow-lg rounded-4 bg-gradient-info text-white h-100">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-desktop fa-3x opacity-75"></i>
+                    </div>
+                    <h5 class="card-title fw-light">Mesas Activas</h5>
+                    <h2 class="display-4 fw-bold mt-2" id="mesas-activas">{{ mesas_activas|length }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow rounded-4 h-100">
+                <div class="card-header bg-primary text-white rounded-top-4 py-3">
+                    <h5 class="mb-0"><i class="fas fa-users me-2"></i> Usuarios Registrados</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Rol</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for usuario in usuarios %}
+                                <tr>
+                                    <td class="fw-medium">{{ usuario.nombre }}</td>
+                                    <td>
+                                        {% if usuario.rol == 'admin' %}
+                                        <span class="badge bg-danger bg-opacity-10 text-danger px-2 py-1 rounded-pill">Admin</span>
+                                        {% else %}
+                                        <span class="badge bg-success bg-opacity-10 text-success px-2 py-1 rounded-pill">Docente</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if usuario.activo %}
+                                        <span class="badge bg-success bg-opacity-10 text-success px-2 py-1 rounded-pill">Activo</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary px-2 py-1 rounded-pill">Inactivo</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow rounded-4 h-100">
+                <div class="card-header bg-success text-white rounded-top-4 py-3">
+                    <h5 class="mb-0"><i class="fas fa-list-ol me-2"></i> Resumen de Mesas</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Mesa</th>
+                                    <th>Docente</th>
+                                    <th>Turno</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for mesa in mesas %}
+                                <tr>
+                                    <td class="fw-medium">Mesa {{ mesa.numero }}</td>
+                                    <td>{{ mesa.docente_nombre }}</td>
+                                    <td>{{ mesa.turno_actual }}</td>
+                                    <td>
+                                        {% if mesa.activa %}
+                                        <span class="badge bg-success bg-opacity-10 text-success px-2 py-1 rounded-pill">Activa</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary px-2 py-1 rounded-pill">Inactiva</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12 text-center">
+            <button onclick="reiniciarSistema()" class="btn btn-outline-danger rounded-pill px-4 shadow-sm">
+                <i class="fas fa-sync me-1"></i> Reiniciar Sistema
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="crearMesaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fas fa-plus me-2"></i>Crear Nueva Mesa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fas fa-desktop fa-3x text-primary mb-3"></i>
+                <p>¿Crear nueva mesa automáticamente?</p>
+                <p class="text-muted small">El sistema asignará el próximo número disponible</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary rounded-pill px-4" onclick="crearMesa()">Crear Mesa</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #36b9cc 0%, #258391 100%);
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+
+.table-hover tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(78, 115, 223, 0.05);
+}
+
+.btn {
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.turno-actual {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #007bff;
+    transition: all 0.3s ease;
+}
+
+.turno-actual.updated {
+    background-color: #d4edda;
+    padding: 2px 5px;
+    border-radius: 3px;
+    animation: highlight 1s ease;
+}
+
+@keyframes highlight {
+    0% { background-color: #d4edda; }
+    100% { background-color: transparent; }
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function crearMesa() {
+    Swal.fire({
+        title: 'Creando mesa...',
+        text: 'Por favor espere',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading()
+        }
+    });
+    
+    fetch('/api/crear_mesa', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error en la respuesta del servidor');
+        }
+        return response.json();
+    })
+    .then(data => {
+        Swal.close();
+        if (data.success) {
+            let mensaje = data.recuperada ? 
+                `Mesa ${data.mesa.numero} recuperada correctamente` : 
+                `Mesa ${data.mesa.numero} creada correctamente`;
+                
+            Swal.fire({
+                icon: 'success',
+                title: data.recuperada ? 'Mesa recuperada' : 'Mesa creada',
+                text: mensaje,
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                location.reload();
+            });
+        } else {
+            Swal.fire('Error', data.error || 'No se pudo crear la mesa', 'error');
+        }
+    })
+    .catch(error => {
+        Swal.close();
+        console.error('Error:', error);
+        Swal.fire('Error', 'Ocurrió un error al conectar con el servidor: ' + error.message, 'error');
+    });
+}
+
+function actualizarEstadoSistema() {
+    fetch('/api/estado_sistema')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Sistema actualizado:', new Date().toLocaleTimeString());
+                
+                const proximoTurno = document.getElementById('proximo-turno');
+                if (proximoTurno && proximoTurno.textContent != data.proximo_turno) {
+                    proximoTurno.textContent = data.proximo_turno;
+                }
+                
+                const totalTurnos = document.getElementById('total-turnos');
+                if (totalTurnos && totalTurnos.textContent != data.total_turnos) {
+                    totalTurnos.textContent = data.total_turnos;
+                }
+                
+                const mesasActivas = document.getElementById('mesas-activas');
+                if (mesasActivas) {
+                    const mesasActivasCount = data.mesas.filter(m => m.activa).length;
+                    if (mesasActivas.textContent != mesasActivasCount) {
+                        mesasActivas.textContent = mesasActivasCount;
+                    }
+                }
+            }
+        })
+        .catch(error => console.error('Error al actualizar estado:', error));
+}
+
+function reiniciarSistema() {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        html: `Esta acción eliminará <strong>TODAS las mesas permanentemente</strong> y reiniciará el sistema.<br><br>¿Deseas continuar?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, reiniciar sistema',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Reiniciando sistema...',
+                text: 'Por favor espere',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+            
+            fetch('/api/reiniciar_sistema', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                Swal.close();
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sistema reiniciado',
+                        html: data.message,
+                        timer: 3000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire('Error', data.error || 'No se pudo reiniciar el sistema', 'error');
+                }
+            })
+            .catch(error => {
+                Swal.close();
+                console.error('Error:', error);
+                Swal.fire('Error', 'Ocurrió un error al conectar con el servidor', 'error');
+            });
+        }
+    });
+}
+
+setInterval(actualizarEstadoSistema, 3000);
+
+document.addEventListener('DOMContentLoaded', function() {
+    actualizarEstadoSistema();
+    
+    window.addEventListener('focus', actualizarEstadoSistema);
+});
+</script>
+{% endblock %}
