@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Turnos - {% block title %}{% endblock %}</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+        }
+        
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 50px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        main {
+            flex: 1;
+        }
+        
+        .navbar {
+            background: var(--primary-gradient) !important;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+            padding: 0.4rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            padding: 0.3rem 0.7rem !important;
+            border-radius: 18px;
+            margin: 0 0.1rem;
+            transition: all 0.2s ease;
+            border: 1.5px solid transparent;
+            font-size: 0.85rem;
+        }
+        
+        .nav-link-primary {
+            background: var(--primary-gradient);
+            color: white !important;
+        }
+        
+        .nav-link-success {
+            background: var(--success-gradient);
+            color: white !important;
+        }
+        
+        .nav-link-secondary {
+            background: var(--secondary-gradient);
+            color: white !important;
+        }
+        
+        .nav-link-dark {
+            background: var(--dark-gradient);
+            color: white !important;
+        }
+        
+        .nav-link:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+        }
+        
+        .nav-link {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            transition: 0.3s;
+        }
+        
+        .nav-link:hover::before {
+            left: 100%;
+        }
+        
+        .alert {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+            border-left: 2px solid;
+            padding: 0.6rem 0.9rem;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+        }
+        
+        .alert-success {
+            border-left-color: #38a169;
+            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+        }
+        
+        .alert-danger {
+            border-left-color: #e53e3e;
+            background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+        }
+        
+        .alert-warning {
+            border-left-color: #dd6b20;
+            background: linear-gradient(135deg, #fffaf0 0%, #feebc8 100%);
+        }
+        
+        .alert-info {
+            border-left-color: #3182ce;
+            background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+        }
+
+        .custom-footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: auto;
+            background: var(--dark-gradient);
+            padding: 6px 12px;
+            border-top-right-radius: 10px;
+            box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.08);
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .custom-footer p {
+            margin: 0;
+            font-size: 0.75rem;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .container {
+            padding: 1.2rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        /* Responsive para móviles */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.1rem;
+            }
+            
+            .nav-link {
+                padding: 0.25rem 0.5rem !important;
+                margin: 0.08rem;
+                font-size: 0.8rem;
+                border-radius: 15px;
+            }
+            
+            .custom-footer {
+                padding: 5px 10px;
+                border-top-right-radius: 8px;
+            }
+            
+            .custom-footer p {
+                font-size: 0.7rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .alert {
+                padding: 0.5rem 0.7rem;
+                font-size: 0.85rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .navbar-nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-item {
+                margin: 0.1rem;
+            }
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-ticket-alt me-2"></i>
+                Sistema de Turnos
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if session.usuario %}
+                        {% if session.usuario.rol == 'admin' %}
+                       
+                        {% else %}
+                        <li class="nav-item">
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <span class="nav-link text-white" style="border: none !important; background: none !important; padding: 0.3rem 0.5rem !important;">
+                                <i class="fas fa-user me-1"></i>{{ session.usuario.nombre }}
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-dark" href="{{ url_for('logout') }}">
+                                <i class="fas fa-sign-out-alt me-1"></i>Cerrar Secion
+                            </a>
+                        </li>
+                    {% else %}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-3 fade-in">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        <i class="fas 
+                            {% if category == 'success' %}fa-check-circle{% endif %}
+                            {% if category == 'danger' %}fa-exclamation-circle{% endif %}
+                            {% if category == 'warning' %}fa-exclamation-triangle{% endif %}
+                            {% if category == 'info' %}fa-info-circle{% endif %}
+                            me-1"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="custom-footer">
+        <p class="mb-0">
+            <i class="fas fa-code me-1"></i>Ing: Eneyder Garcia &copy; <span id="current-year"></span>
+        </p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

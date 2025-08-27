@@ -1,0 +1,184 @@
+[
+    {
+        "id": 1,
+        "numero": 1,
+        "docente": "soporte1",
+        "docente_id": 6,
+        "turno_actual": 9,
+        "activa": true,
+        "historial": [
+            {
+                "turno": 0,
+                "hora": "10:12:13",
+                "fecha": "2025-08-20"
+            },
+            {
+                "turno": 1,
+                "hora": "10:12:38",
+                "fecha": "2025-08-20"
+            },
+            {
+                "turno": 2,
+                "hora": "14:01:08",
+                "fecha": "2025-08-20"
+            },
+            {
+                "turno": 3,
+                "hora": "14:04:21",
+                "fecha": "2025-08-20"
+            },
+            {
+                "turno": 4,
+                "hora": "14:06:06",
+                "fecha": "2025-08-20"
+            },
+            {
+                "turno": 5,
+                "hora": "14:08:46",
+                "fecha": "2025-08-20"
+            },
+            {
+                "turno": 6,
+                "hora": "20:01:08",
+                "fecha": "2025-08-20",
+                "mesa_id": 1,
+                "mesa_numero": 1,
+                "docente": "soporte1"
+            },
+            {
+                "turno": 7,
+                "hora": "20:01:17",
+                "fecha": "2025-08-20",
+                "mesa_id": 1,
+                "mesa_numero": 1,
+                "docente": "soporte1"
+            },
+            {
+                "turno": 8,
+                "hora": "20:16:51",
+                "fecha": "2025-08-20",
+                "mesa_id": 1,
+                "mesa_numero": 1,
+                "docente": "soporte1"
+            }
+        ],
+        "ultimo_cambio": "20:16:51"
+    },
+    {
+        "id": 2,
+        "numero": 2,
+        "docente": "Docente Ejemplo",
+        "docente_id": 2,
+        "turno_actual": 10,
+        "activa": true,
+        "historial": [
+            {
+                "turno": 0,
+                "hora": "19:43:04",
+                "fecha": "2025-08-20"
+            },
+            {
+                "turno": 1,
+                "hora": "19:43:08",
+                "fecha": "2025-08-20"
+            },
+            {
+                "turno": 2,
+                "hora": "19:43:13",
+                "fecha": "2025-08-20"
+            },
+            {
+                "turno": 3,
+                "hora": "19:59:37",
+                "fecha": "2025-08-20",
+                "mesa_id": 2,
+                "mesa_numero": 2,
+                "docente": "Docente Ejemplo"
+            },
+            {
+                "turno": 4,
+                "hora": "20:28:16",
+                "fecha": "2025-08-20",
+                "mesa_id": 2,
+                "mesa_numero": 2,
+                "docente": "Docente Ejemplo"
+            },
+            {
+                "turno": 5,
+                "hora": "20:28:20",
+                "fecha": "2025-08-20",
+                "mesa_id": 2,
+                "mesa_numero": 2,
+                "docente": "Docente Ejemplo"
+            },
+            {
+                "turno": 6,
+                "hora": "20:28:24",
+                "fecha": "2025-08-20",
+                "mesa_id": 2,
+                "mesa_numero": 2,
+                "docente": "Docente Ejemplo"
+            },
+            {
+                "turno": 7,
+                "hora": "20:28:28",
+                "fecha": "2025-08-20",
+                "mesa_id": 2,
+                "mesa_numero": 2,
+                "docente": "Docente Ejemplo"
+            },
+            {
+                "turno": 8,
+                "hora": "20:28:33",
+                "fecha": "2025-08-20",
+                "mesa_id": 2,
+                "mesa_numero": 2,
+                "docente": "Docente Ejemplo"
+            },
+            {
+                "turno": 9,
+                "hora": "20:28:36",
+                "fecha": "2025-08-20",
+                "mesa_id": 2,
+                "mesa_numero": 2,
+                "docente": "Docente Ejemplo"
+            }
+        ],
+        "ultimo_cambio": "20:28:36"
+    },
+    {
+        "id": 3,
+        "numero": 3,
+        "docente": "Sandra Campo",
+        "docente_id": 7,
+        "turno_actual": 3,
+        "activa": true,
+        "historial": [
+            {
+                "turno": 0,
+                "hora": "21:01:45",
+                "fecha": "2025-08-20",
+                "mesa_id": 3,
+                "mesa_numero": 3,
+                "docente": "Sandra Campo"
+            },
+            {
+                "turno": 1,
+                "hora": "21:01:54",
+                "fecha": "2025-08-20",
+                "mesa_id": 3,
+                "mesa_numero": 3,
+                "docente": "Sandra Campo"
+            },
+            {
+                "turno": 2,
+                "hora": "21:02:00",
+                "fecha": "2025-08-20",
+                "mesa_id": 3,
+                "mesa_numero": 3,
+                "docente": "Sandra Campo"
+            }
+        ],
+        "ultimo_cambio": "21:02:00"
+    }
+]

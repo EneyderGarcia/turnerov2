@@ -1,0 +1,408 @@
+{% extends "base.html" %}
+
+{% block title %}Panel del Docente{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --success-gradient: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+        --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        --highlight-color: #e74c3c;
+    }
+    
+    .teacher-header {
+        background: none;
+        padding: 0.5rem 0;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #e9ecef;
+        position: relative;
+    }
+    
+    .user-badge {
+        background: var(--primary-gradient);
+        color: white;
+        border-radius: 15px;
+        padding: 0.3rem 1rem;
+        font-weight: 500;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        display: inline-block;
+    }
+    
+    .card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+        margin-bottom: 1.2rem;
+    }
+    
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+    
+    .card-header {
+        border: none;
+        padding: 0.8rem 1.2rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        color: white;
+        font-size: 0.95rem;
+    }
+    
+    .card-success .card-header {
+        background: var(--success-gradient);
+    }
+    
+    .card-warning .card-header {
+        background: var(--warning-gradient);
+    }
+    
+    .card-secondary .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .card-body {
+        padding: 1.2rem;
+    }
+    
+    .display-4 {
+        font-weight: 700;
+        font-size: 2.2rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .btn-primary {
+        background: var(--primary-gradient);
+        border: none;
+        border-radius: 30px;
+        padding: 0.6rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
+        background: linear-gradient(135deg, #5a6fd8 0%, #6a4196 100%);
+    }
+    
+    .badge {
+        font-weight: 500;
+        border-radius: 15px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+    
+    .pulse {
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.03); }
+        100% { transform: scale(1); }
+    }
+    
+    .floating-icon {
+        animation: float 3s infinite ease-in-out;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+    }
+    
+    .small-icon {
+        font-size: 1.8rem !important;
+    }
+    
+    .compact-info {
+        font-size: 0.9rem;
+    }
+    
+    @media (max-width: 768px) {
+        .display-4 {
+            font-size: 1.8rem;
+        }
+        
+        .card-header {
+            padding: 0.7rem 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .card-body {
+            padding: 1rem;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="teacher-header">
+        <div class="d-flex flex-column">
+            <h2 class="mb-1"><i class="fas fa-chalkboard-teacher me-2"></i>Panel del Docente</h2>
+        </div>
+    </div>
+
+    {% if mesa %}
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5 mb-3">
+            <div class="card border-0 h-100">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-desktop me-2"></i>Mi Mesa Asignada
+                    </h6>
+                </div>
+                <div class="card-body text-center py-3">
+                    <div class="floating-icon mb-2">
+                        <i class="fas fa-desktop small-icon text-primary"></i>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <span class="display-4 text-primary fw-bold">Mesa {{ mesa.numero }}</span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-around mb-2">
+                        <div class="text-center">
+                            <small class="text-muted d-block mb-1 compact-info">Estado</small>
+                            {% if mesa.activa %}
+                            <span class="badge bg-success pulse">Activa</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Inactiva</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="text-center">
+                            <small class="text-muted d-block mb-1 compact-info">Último Turno Avanzado</small>
+                            <span class="badge bg-info fs-6 d-block mt-1" id="mi-ultimo-turno">{{ mesa.turno_actual }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-5 mb-3">
+            <div class="card card-success border-0 h-100">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-ticket-alt me-2"></i>Gestión de Turnos
+                    </h6>
+                </div>
+                <div class="card-body text-center py-3">
+                    <div class="mb-3">
+                        <i class="fas fa-ticket-alt small-icon text-success mb-2 floating-icon"></i>
+                        <h5 class="text-success mb-2 compact-info">Último Turno General</h5>
+                        <div class="display-4 fw-bold text-success" id="turno-actual-general">{{ ultimo_turno_general }}</div>
+                    </div>
+                    
+                    <button class="btn btn-primary w-100 mb-2 py-2" onclick="avanzarTurno({{ mesa.id }})">
+                        <i class="fas fa-forward me-2"></i>Siguiente Turno
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-warning border-0">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Mesa No Asignada
+                    </h6>
+                </div>
+                <div class="card-body text-center py-4">
+                    <div class="mb-3">
+                        <i class="fas fa-desktop small-icon text-warning mb-2 floating-icon"></i>
+                        <h4 class="text-warning compact-info">No tienes una mesa asignada</h4>
+                    </div>
+                    <p class="mb-3 text-muted compact-info">
+                        Contacta al administrador del sistema para que te asigne una mesa.
+                    </p>
+                    <div class="alert alert-info compact-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Una vez que te asignen una mesa, podrás gestionar los turnos desde aquí.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="card card-secondary border-0">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-user-circle me-2"></i>Información de la Sesión
+                    </h6>
+                </div>
+                <div class="card-body py-3">
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-user fa-lg text-primary me-2"></i>
+                                <div class="compact-info">
+                                    <strong>Usuario:</strong><br>
+                                    <span class="text-muted">{{ usuario.nombre }}</span>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-envelope fa-lg text-primary me-2"></i>
+                                <div class="compact-info">
+                                    <strong>Email:</strong><br>
+                                    <span class="text-muted">{{ usuario.email }}</span>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-user-tag fa-lg text-primary me-2"></i>
+                                <div class="compact-info">
+                                    <strong>Rol:</strong><br>
+                                    <span class="badge bg-success">Docente</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-desktop fa-lg text-primary me-2"></i>
+                                <div class="compact-info">
+                                    <strong>Mesa asignada:</strong><br>
+                                    {% if mesa %}
+                                    <span class="badge bg-primary">Mesa {{ mesa.numero }}</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Sin asignar</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-circle fa-lg text-primary me-2"></i>
+                                <div class="compact-info">
+                                    <strong>Estado mesa:</strong><br>
+                                    {% if mesa and mesa.activa %}
+                                    <span class="badge bg-success">Activa</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Inactiva</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-clock fa-lg text-primary me-2"></i>
+                                <div class="compact-info">
+                                    <strong>Hora actual:</strong><br>
+                                    <span class="text-muted" id="hora-actual">{{ now.strftime('%H:%M:%S') }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function actualizarHora() {
+    const ahora = new Date();
+    document.getElementById('hora-actual').textContent = 
+        ahora.toLocaleTimeString('es-ES');
+}
+setInterval(actualizarHora, 1000);
+
+function cargarEstadoSistema() {
+    fetch('/api/estado_sistema')
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Actualizar el último turno general
+            if (data.ultimos_turnos && data.ultimos_turnos.length > 0) {
+                document.getElementById('turno-actual-general').textContent = data.ultimos_turnos[0].numero;
+            }
+            
+            // Actualizar el último turno de mi mesa
+            const miMesa = data.mesas.find(m => m.numero === {{ mesa.numero if mesa else 0 }});
+            if (miMesa) {
+                document.getElementById('mi-ultimo-turno').textContent = miMesa.turno_actual;
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error al cargar estado del sistema:', error);
+    });
+}
+
+// Función para obtener el último turno general (pantalla pública)
+function obtenerUltimoTurnoGeneral() {
+    fetch('/api/ultimo_turno')
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const ultimoTurno = data.ultimo_turno.turno;
+            const turnoActualElement = document.getElementById('turno-actual-general');
+            
+            // Solo actualizar si el turno es diferente
+            if (parseInt(turnoActualElement.textContent) !== ultimoTurno) {
+                turnoActualElement.textContent = ultimoTurno;
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error al obtener último turno general:', error);
+    });
+}
+
+// Inicializar y configurar intervalos
+document.addEventListener('DOMContentLoaded', function() {
+    // Cargar estado inicial
+    cargarEstadoSistema();
+    
+    // Verificar el último turno general cada 3 segundos
+    setInterval(obtenerUltimoTurnoGeneral, 3000);
+    
+    // También mantener el intervalo para el estado del sistema
+    setInterval(cargarEstadoSistema, 5000);
+});
+
+function avanzarTurno(mesaId) {
+    fetch(`/api/siguiente_turno/${mesaId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Actualizar el último turno de mi mesa
+            document.getElementById('mi-ultimo-turno').textContent = data.nuevo_turno;
+            
+            // También actualizar el turno general (ya que se creó un nuevo turno)
+            obtenerUltimoTurnoGeneral();
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Turno avanzado',
+                text: data.mensaje,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        } else {
+            Swal.fire('Error', data.error || 'No se pudo avanzar el turno', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire('Error', 'Ocurrió un error al procesar la solicitud', 'error');
+    });
+}
+</script>
+{% endblock %}

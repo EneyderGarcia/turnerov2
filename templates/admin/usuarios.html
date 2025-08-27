@@ -1,0 +1,379 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Usuarios{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary"><i class="fas fa-users me-2"></i>Gestión de Usuarios</h2>
+        <div>
+            <button class="btn btn-primary shadow-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#crearUsuarioModal">
+                <i class="fas fa-plus me-1"></i>Crear Usuario
+            </button>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary ms-2 shadow-sm rounded-pill">
+                <i class="fas fa-arrow-left me-1"></i>Volver
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-header bg-primary text-white rounded-top-3">
+            <h5 class="card-title mb-0 fw-bold"><i class="fas fa-list me-2"></i>Lista de Usuarios</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Rol</th>
+                            <th>Mesa Asignada</th>
+                            <th class="text-center pe-4">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for usuario in usuarios %}
+                        <tr>
+                            <td class="ps-4 fw-semibold">{{ usuario.id }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div>
+                                        <span class="fw-medium">{{ usuario.nombre }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ usuario.email }}</td>
+                            <td>
+                                {% if usuario.rol == 'admin' %}
+                                <span class="badge bg-danger rounded-pill px-3">Administrador</span>
+                                {% else %}
+                                <span class="badge bg-success rounded-pill px-3">Docente</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if usuario.mesa %}
+                                <span class="badge bg-primary rounded-pill">Mesa {{ usuario.mesa }}</span>
+                                {% else %}
+                                <span class="badge bg-secondary rounded-pill">Sin asignar</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center pe-4">
+                                <div class="btn-group shadow-sm">
+                                    <button class="btn btn-sm btn-outline-warning rounded-start" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#editarUsuarioModal"
+                                            onclick="cargarUsuarioEdicion({{ usuario.id }})"
+                                            title="Editar usuario">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger rounded-end" 
+                                            onclick="eliminarUsuario({{ usuario.id }}, '{{ usuario.nombre }}')"
+                                            title="Eliminar usuario">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <div class="py-4">
+                                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No hay usuarios registrados</h5>
+                                    <p class="text-muted">Utiliza el botón "Nuevo Usuario" para crear el primer usuario.</p>
+                                    <button class="btn btn-primary mt-2 rounded-pill" data-bs-toggle="modal" data-bs-target="#crearUsuarioModal">
+                                        <i class="fas fa-plus me-1"></i>Crear Primer Usuario
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="crearUsuarioModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-3">
+            <div class="modal-header bg-primary text-white rounded-top-3">
+                <h5 class="modal-title"><i class="fas fa-user-plus me-2"></i>Crear Nuevo Usuario</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="crearUsuarioForm">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label fw-medium">Nombre Completo</label>
+                        <input type="text" class="form-control rounded-pill" id="nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-medium">Email</label>
+                        <input type="email" class="form-control rounded-pill" id="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label fw-medium">Contraseña</label>
+                        <input type="password" class="form-control rounded-pill" id="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="rol" class="form-label fw-medium">Rol</label>
+                        <select class="form-select rounded-pill" id="rol" required>
+                            <option value="">Seleccionar rol...</option>
+                            <option value="admin">Administrador</option>
+                            <option value="docente">Docente</span></option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary rounded-pill" onclick="crearUsuario()">Crear Usuario</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editarUsuarioModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-3">
+            <div class="modal-header bg-warning text-dark rounded-top-3">
+                <h5 class="modal-title"><i class="fas fa-user-edit me-2"></i>Editar Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editarUsuarioForm">
+                    <input type="hidden" id="editarUsuarioId">
+                    <div class="mb-3">
+                        <label for="editarNombre" class="form-label fw-medium">Nombre Completo</label>
+                        <input type="text" class="form-control rounded-pill" id="editarNombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editarEmail" class="form-label fw-medium">Email</label>
+                        <input type="email" class="form-control rounded-pill" id="editarEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editarPassword" class="form-label fw-medium">Nueva Contraseña</label>
+                        <input type="password" class="form-control rounded-pill" id="editarPassword">
+                        <div class="form-text ms-2">Dejar vacío para mantener la contraseña actual.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editarRol" class="form-label fw-medium">Rol</label>
+                        <select class="form-select rounded-pill" id="editarRol" required>
+                            <option value="admin">Administrador</option>
+                            <option value="docente">Docente</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-warning rounded-pill" onclick="actualizarUsuario()">Actualizar Usuario</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+let usuarios = {{ usuarios|tojson }};
+
+document.addEventListener('DOMContentLoaded', function() {
+    const crearModal = document.getElementById('crearUsuarioModal');
+    
+    crearModal.addEventListener('show.bs.modal', function () {
+        document.getElementById('nombre').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('password').value = '';
+        document.getElementById('rol').selectedIndex = 0;
+    });
+    
+    const editarModal = document.getElementById('editarUsuarioModal');
+    editarModal.addEventListener('hidden.bs.modal', function () {
+        document.getElementById('editarUsuarioForm').reset();
+    });
+});
+
+function crearUsuario() {
+    const nombre = document.getElementById('nombre').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const rol = document.getElementById('rol').value;
+
+    if (!nombre || !email || !password || !rol) {
+        Swal.fire('Error', 'Por favor completa todos los campos requeridos', 'error');
+        return;
+    }
+
+    Swal.fire({
+        title: 'Creando usuario...',
+        text: 'Por favor espere',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading()
+        }
+    });
+
+    fetch('/api/crear_usuario', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ nombre, email, password, rol })
+    })
+    .then(response => response.json())
+    .then(data => {
+        Swal.close();
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Usuario creado',
+                text: `Usuario ${data.usuario.nombre} creado correctamente`,
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('crearUsuarioModal'));
+                modal.hide();
+                
+                location.reload();
+            });
+        } else {
+            Swal.fire('Error', data.error || 'No se pudo crear el usuario', 'error');
+        }
+    })
+    .catch(error => {
+        Swal.close();
+        console.error('Error:', error);
+        Swal.fire('Error', 'Ocurrió un error al procesar la solicitud', 'error');
+    });
+}
+
+function cargarUsuarioEdicion(usuarioId) {
+    const usuario = usuarios.find(u => u.id === usuarioId);
+    
+    if (usuario) {
+        document.getElementById('editarUsuarioId').value = usuario.id;
+        document.getElementById('editarNombre').value = usuario.nombre;
+        document.getElementById('editarEmail').value = usuario.email;
+        document.getElementById('editarRol').value = usuario.rol;
+        document.getElementById('editarPassword').value = '';
+    }
+}
+
+function actualizarUsuario() {
+    const usuarioId = document.getElementById('editarUsuarioId').value;
+    const nombre = document.getElementById('editarNombre').value;
+    const email = document.getElementById('editarEmail').value;
+    const password = document.getElementById('editarPassword').value;
+    const rol = document.getElementById('editarRol').value;
+
+    if (!nombre || !email || !rol) {
+        Swal.fire('Error', 'Por favor completa todos los campos requeridos', 'error');
+        return;
+    }
+
+    Swal.fire({
+        title: 'Actualizando usuario...',
+        text: 'Por favor espere',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading()
+        }
+    });
+
+    fetch(`/api/editar_usuario/${usuarioId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ nombre, email, password, rol })
+    })
+    .then(response => response.json())
+    .then(data => {
+        Swal.close();
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Usuario actualizado',
+                text: `Usuario ${data.usuario.nombre} actualizado correctamente`,
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('editarUsuarioModal'));
+                modal.hide();
+                
+                location.reload();
+            });
+        } else {
+            Swal.fire('Error', data.error || 'No se pudo actualizar el usuario', 'error');
+        }
+    })
+    .catch(error => {
+        Swal.close();
+        console.error('Error:', error);
+        Swal.fire('Error', 'Ocurrió un error al procesar la solicitud', 'error');
+    });
+}
+
+function eliminarUsuario(usuarioId, usuarioNombre) {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        html: `Esta acción eliminará al usuario: <strong>${usuarioNombre}</strong><br>Esta acción no se puede deshacer.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        customClass: {
+            confirmButton: 'rounded-pill px-4',
+            cancelButton: 'rounded-pill px-4'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Eliminando usuario...',
+                text: 'Por favor espere',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+            
+            fetch(`/api/eliminar_usuario/${usuarioId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                Swal.close();
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Usuario eliminado',
+                        text: `Usuario ${usuarioNombre} eliminado correctamente`,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire('Error', data.error || 'No se pudo eliminar el usuario', 'error');
+                }
+            })
+            .catch(error => {
+                Swal.close();
+                console.error('Error:', error);
+                Swal.fire('Error', 'Ocurrió un error al procesar la solicitud', 'error');
+            });
+        }
+    });
+}
+</script>
+{% endblock %}

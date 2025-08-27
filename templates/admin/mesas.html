@@ -1,0 +1,534 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Mesas{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-desktop me-2"></i>Gestión de Mesas</h2>
+        <div>
+            <button class="btn btn-success btn-sm me-2 rounded-pill" onclick="crearMesa()">
+                <i class="fas fa-plus me-1"></i>Agregar Mesa
+            </button>
+            <button class="btn btn-secondary btn-sm me-2 rounded-pill" data-bs-toggle="modal" data-bs-target="#mesasEliminadasModal">
+                <i class="fas fa-trash-restore me-1"></i>Ver Mesas Eliminadas
+            </button>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary shadow-sm rounded-pill">
+                <i class="fas fa-arrow-left me-1"></i>Volver
+            </a>
+        </div>
+    </div>
+
+    <div class="row" id="mesas-container">
+        {% for mesa in mesas %}
+        <div class="col-md-4 col-lg-3 col-xl-2 mb-4 mesa-card" id="mesa-{{ mesa.id }}">
+            <div class="card h-100 shadow-sm border-{% if mesa.activa %}primary{% else %}secondary{% endif %}">
+                <div class="card-header bg-{% if mesa.activa %}primary{% else %}secondary{% endif %} text-white d-flex justify-content-between align-items-center py-2">
+                    <h6 class="card-title mb-0 fw-bold">Mesa {{ mesa.numero }}</h6>
+                    <div class="form-check form-switch mb-0">
+                        <input class="form-check-input" type="checkbox" {% if mesa.activa %}checked{% endif %} 
+                               onchange="toggleMesa({{ mesa.id }})" style="transform: scale(0.8);">
+                    </div>
+                </div>
+                <div class="card-body py-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-medium">Estado:</span>
+                        {% if mesa.activa %}
+                        <span class="badge bg-success rounded-pill">Activa</span>
+                        {% else %}
+                        <span class="badge bg-secondary rounded-pill">Inactiva</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-medium">Turno:</span>
+                        <span class="fs-5 fw-bold text-primary">{{ mesa.turno_actual }}</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <span class="fw-medium d-block mb-1">Docente:</span>
+                        {% if mesa.docente %}
+                        <span class="text-success fw-semibold d-block text-truncate" style="max-width: 150px;" title="{{ mesa.docente }}">
+                            <i class="fas fa-user-check me-1"></i>{{ mesa.docente }}
+                        </span>
+                        {% else %}
+                        <span class="text-danger"><i class="fas fa-user-times me-1"></i>Sin asignar</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-footer bg-light py-2">
+                    <select class="form-select form-select-sm mb-2 docente-select" id="docente-select-{{ mesa.id }}" 
+                            onchange="asignarDocente({{ mesa.id }})" {% if not mesa.activa %}disabled{% endif %}>
+                        <option value="">Seleccionar docente...</option>
+                        {% for docente in docentes %}
+                        <option value="{{ docente.id }}" 
+                                {% if mesa.docente_id == docente.id %}selected{% endif %}
+                                data-asignado="{{ 'true' if docente.asignado else 'false' }}"
+                                data-mesa-actual="{{ mesa.id if mesa.docente_id == docente.id else '' }}">
+                            {{ docente.nombre }}{% if docente.asignado and mesa.docente_id != docente.id %} (Asignado){% endif %}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    
+                    <div class="btn-group w-100">
+                        <button class="btn btn-outline-danger btn-sm" onclick="eliminarMesa({{ mesa.id }})" title="Eliminar mesa">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="btn btn-outline-warning btn-sm" onclick="reiniciarTurno({{ mesa.id }})" title="Reiniciar turno">
+                            <i class="fas fa-sync"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="alert alert-info text-center py-4">
+                <i class="fas fa-desktop fa-3x mb-3 text-primary"></i>
+                <h4 class="alert-heading">No hay mesas configuradas</h4>
+                <p>No hay mesas en el sistema. Crea la primera mesa usando el botón "Agregar Mesa".</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="modal fade" id="mesasEliminadasModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary text-white">
+                <h5 class="modal-title"><i class="fas fa-trash-restore me-2"></i>Mesas Eliminadas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-sm">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Número</th>
+                                <th>Último Turno</th>
+                                <th>Docente Asignado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-mesas-eliminadas">
+                        </tbody>
+                    </table>
+                </div>
+                <div id="sin-mesas-eliminadas" class="text-center py-5" style="display: none;">
+                    <i class="fas fa-trash fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No hay mesas eliminadas</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    actualizarSelectoresDocentes();
+});
+
+function actualizarSelectoresDocentes() {
+    const selectores = document.querySelectorAll('.docente-select');
+    selectores.forEach(select => {
+        for (let i = 0; i < select.options.length; i++) {
+            const option = select.options[i];
+            const asignado = option.getAttribute('data-asignado') === 'true';
+            const mesaActual = option.getAttribute('data-mesa-actual');
+            const mesaId = select.id.split('-')[2];
+            
+            if (asignado && mesaActual !== mesaId) {
+                option.disabled = true;
+                if (!option.textContent.includes('(Asignado)')) {
+                    option.textContent += ' (Asignado)';
+                }
+            } else if (asignado && mesaActual === mesaId) {
+                option.disabled = false;
+            }
+        }
+    });
+}
+
+function crearMesa() {
+    Swal.fire({
+        title: 'Creando mesa...',
+        text: 'Por favor espere',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading()
+        }
+    });
+    
+    fetch('/api/crear_mesa', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error en la respuesta del servidor');
+        }
+        return response.json();
+    })
+    .then(data => {
+        Swal.close();
+        if (data.success) {
+            let mensaje = data.recuperada ? 
+                `Mesa ${data.mesa.numero} recuperada correctamente` : 
+                `Mesa ${data.mesa.numero} creada correctamente`;
+                
+            Swal.fire({
+                icon: 'success',
+                title: data.recuperada ? 'Mesa recuperada' : 'Mesa creada',
+                text: mensaje,
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                location.reload();
+            });
+        } else {
+            Swal.fire('Error', data.error || 'No se pudo crear la mesa', 'error');
+        }
+    })
+    .catch(error => {
+        Swal.close();
+        console.error('Error:', error);
+        Swal.fire('Error', 'Ocurrió un error al conectar con el servidor: ' + error.message, 'error');
+    });
+}
+
+function toggleMesa(mesaId) {
+    fetch(`/api/activar_mesa/${mesaId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Mesa actualizada',
+                text: `La mesa ahora está ${data.activa ? 'activa' : 'inactiva'}`,
+                timer: 1500,
+                showConfirmButton: false
+            });
+            
+            setTimeout(() => {
+                location.reload();
+            }, 1600);
+        } else {
+            Swal.fire('Error', data.error || 'No se pudo actualizar la mesa', 'error');
+            location.reload();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire('Error', 'Ocurrió un error al procesar la solicitud', 'error');
+        location.reload();
+    });
+}
+
+function asignarDocente(mesaId) {
+    const select = document.getElementById(`docente-select-${mesaId}`);
+    const docenteId = select.value;
+    const docenteNombre = select.options[select.selectedIndex].text;
+    
+    const estaAsignado = select.options[select.selectedIndex].getAttribute('data-asignado') === 'true';
+    const mesaActual = select.options[select.selectedIndex].getAttribute('data-mesa-actual');
+    
+    if (estaAsignado && mesaActual !== mesaId.toString()) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Docente no disponible',
+            text: 'Este docente ya está asignado a otra mesa. Por favor seleccione otro docente.',
+            confirmButtonColor: '#3085d6',
+        });
+        
+        select.value = '';
+        return;
+    }
+    
+    fetch('/api/asignar_docente_api', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+            mesa_id: mesaId, 
+            docente_id: docenteId ? parseInt(docenteId) : null 
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: docenteId ? 'Docente asignado' : 'Docente desasignado',
+                text: docenteId ? `Docente: ${data.docente}` : 'Docente removido correctamente',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        
+            setTimeout(() => {
+                location.reload();
+            }, 1600);
+        } else {
+            Swal.fire('Error', data.error || 'No se pudo asignar el docente', 'error');
+            location.reload();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire('Error', 'Ocurrió un error al procesar la solicitud', 'error');
+        location.reload();
+    });
+}
+
+function cargarMesasEliminadas() {
+    fetch('/api/mesas_eliminadas')
+    .then(response => response.json())
+    .then(data => {
+        const tabla = document.getElementById('tabla-mesas-eliminadas');
+        const sinMesas = document.getElementById('sin-mesas-eliminadas');
+        
+        tabla.innerHTML = '';
+        
+        if (data.success && data.mesas.length > 0) {
+            sinMesas.style.display = 'none';
+            
+            data.mesas.forEach(mesa => {
+                const fila = document.createElement('tr');
+                fila.innerHTML = `
+                    <td>Mesa ${mesa.numero}</td>
+                    <td>${mesa.turno_actual}</td>
+                    <td>${mesa.docente || 'Sin asignar'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-success rounded-pill px-3" onclick="recuperarMesa(${mesa.id})">
+                            <i class="fas fa-trash-restore me-1"></i>Recuperar
+                        </button>
+                    </td>
+                `;
+                tabla.appendChild(fila);
+            });
+        } else {
+            sinMesas.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function recuperarMesa(mesaId) {
+    Swal.fire({
+        title: '¿Recuperar esta mesa?',
+        text: "La mesa volverá a estar disponible en el sistema",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, recuperar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/api/recuperar_mesa/${mesaId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Mesa recuperada',
+                        text: data.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('mesasEliminadasModal'));
+                        modal.hide();
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire('Error', data.error, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire('Error', 'Ocurrió un error al procesar la solicitud', 'error');
+            });
+        }
+    });
+}
+
+document.getElementById('mesasEliminadasModal').addEventListener('show.bs.modal', function () {
+    cargarMesasEliminadas();
+});
+
+function eliminarMesa(mesaId) {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        html: `Esta acción marcará la mesa como eliminada.<br>Podrás recuperarla después si es necesario.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/api/eliminar_mesa/${mesaId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const mesaElement = document.getElementById(`mesa-${mesaId}`);
+                    if (mesaElement) {
+                        mesaElement.remove();
+                    }
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Mesa eliminada',
+                        html: `Mesa ${data.mesa_numero} marcada como eliminada.<br>Número reservado: ${data.mesa_numero}`,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    
+                    const mesasContainer = document.getElementById('mesas-container');
+                    if (mesasContainer.children.length === 0) {
+                        mesasContainer.innerHTML = `
+                            <div class="col-12">
+                                <div class="alert alert-info text-center py-4">
+                                    <i class="fas fa-desktop fa-3x mb-3 text-primary"></i>
+                                    <h4 class="alert-heading">No hay mesas activas</h4>
+                                    <p>No hay mesas activas en el sistema. Puedes crear nuevas mesas o recuperar mesas eliminadas.</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                } else {
+                    Swal.fire('Error', data.error || 'No se pudo eliminar la mesa', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire('Error', 'Ocurrió un error al procesar la solicitud', 'error');
+            });
+        }
+    });
+}
+
+function reiniciarTurno(mesaId) {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: "Esta acción reiniciará el contador de turnos de esta mesa",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, reiniciar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/api/reiniciar_turnos_mesa/${mesaId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Turno reiniciado',
+                        text: `El turno se reinició correctamente a ${data.nuevo_turno}`,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    
+                    const turnoElement = document.querySelector(`#mesa-${mesaId} .fs-5`);
+                    if (turnoElement) {
+                        turnoElement.textContent = data.nuevo_turno;
+                    }
+                } else {
+                    Swal.fire('Error', data.error || 'No se pudo reiniciar el turno', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire('Error', 'Ocurrió un error al procesar la solicitud', 'error');
+            });
+        }
+    });
+}
+
+function reiniciarSistema() {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        html: `Esta acción eliminará <strong>TODAS las mesas permanentemente</strong> y reiniciará el sistema.<br><br>¿Deseas continuar?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, reiniciar sistema',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Reiniciando sistema...',
+                text: 'Por favor espere',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+            
+            fetch('/api/reiniciar_sistema', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                Swal.close();
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sistema reiniciado',
+                        html: data.message,
+                        timer: 3000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire('Error', data.error || 'No se pudo reiniciar el sistema', 'error');
+                }
+            })
+            .catch(error => {
+                Swal.close();
+                console.error('Error:', error);
+                Swal.fire('Error', 'Ocurrió un error al conectar con el servidor', 'error');
+            });
+        }
+    });
+}
+</script>
+{% endblock %}
