@@ -9,7 +9,6 @@ app = Flask(__name__)
 
 DATABASE_URL = os.getenv('DATABASE_URL')
 if DATABASE_URL and DATABASE_URL.startswith('postgres://'):
-    #DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
     DATABASE_URL = DATABASE_URL.replace("postgres://","postgressql://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///turnero.db'
 
@@ -174,7 +173,6 @@ def admin_dashboard():
     usuarios = Usuario.query.filter_by(activo=True).all()
     mesas = Mesa.query.filter_by(eliminada=False).all()  
     
-    # Obtener información completa de los docentes para cada mesa
     mesas_con_docente = []
     for mesa in mesas:
         mesa_dict = mesa.to_dict()
@@ -826,19 +824,14 @@ def obtener_usuario(usuario_id):
 @admin_required
 def reiniciar_sistema():
     try:
-        # Eliminar todas las mesas permanentemente
         mesas = Mesa.query.all()
         for mesa in mesas:
-            # Eliminar registros relacionados
             TurnoHistorial.query.filter_by(mesa_id=mesa.id).delete()
             TurnoGeneral.query.filter_by(mesa_id=mesa.id).delete()
-            # Eliminar la mesa
             db.session.delete(mesa)
         
-        # Eliminar todos los turnos generales
         TurnoGeneral.query.delete()
-        
-        # Reiniciar el contador de turnos
+    
         global ultimo_turno_avanzado
         ultimo_turno_avanzado = None
         
