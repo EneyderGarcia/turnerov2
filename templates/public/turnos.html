@@ -103,8 +103,8 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 2rem 1rem; /* Reducido el padding vertical */
-            min-height: 30vh; /* Reducida la altura mínima */
+            padding: 2rem 1rem;
+            min-height: 30vh;
             background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
         }
         
@@ -113,23 +113,28 @@
             margin: 0;
             line-height: 1;
             transition: all 0.5s ease;
-            font-size: 12vw; /* Reducido el tamaño de fuente */
+            font-size: 20vw; /* Aumentado el tamaño de fuente */
             color: var(--highlight-color);
             text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
         }
         
         .info-text {
-            font-weight: 600;
+            font-weight: 700; /* Aumentado el peso de la fuente */
             margin: 1rem 0;
-            font-size: 2.2rem; /* Reducido el tamaño de fuente */
+            font-size: 3rem; /* Aumentado el tamaño de fuente */
             color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.7);
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         
         .info-subtext {
             font-weight: 500;
             opacity: 0.9;
-            font-size: 1.8rem; /* Reducido el tamaño de fuente */
+            font-size: 1.8rem;
             color: var(--primary-color);
+            margin-top: 0.5rem;
         }
         
         .next-turn-card {
@@ -211,28 +216,14 @@
             animation: highlight 0.8s ease;
         }
         
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
         /* Media queries responsivos */
         @media (max-width: 1400px) {
             .turn-number {
-                font-size: 11vw;
+                font-size: 18vw;
             }
             
             .info-text {
-                font-size: 2rem;
-            }
-            
-            .info-subtext {
-                font-size: 1.6rem;
+                font-size: 2.8rem;
             }
         }
         
@@ -250,11 +241,11 @@
             }
             
             .turn-number {
-                font-size: 10vw;
+                font-size: 17vw;
             }
             
             .info-text {
-                font-size: 1.8rem;
+                font-size: 2.5rem;
             }
             
             .info-subtext {
@@ -268,11 +259,11 @@
         
         @media (max-width: 992px) {
             .turn-number {
-                font-size: 11vw;
+                font-size: 18vw;
             }
             
             .info-text {
-                font-size: 1.6rem;
+                font-size: 2.2rem;
             }
             
             .info-subtext {
@@ -298,11 +289,11 @@
             }
             
             .turn-number {
-                font-size: 14vw;
+                font-size: 22vw;
             }
             
             .info-text {
-                font-size: 1.5rem;
+                font-size: 2rem;
             }
             
             .info-subtext {
@@ -337,11 +328,12 @@
             }
             
             .turn-number {
-                font-size: 18vw;
+                font-size: 26vw;
             }
             
             .info-text {
-                font-size: 1.4rem;
+                font-size: 1.8rem;
+                padding: 0.4rem 1rem;
             }
             
             .info-subtext {
@@ -371,11 +363,11 @@
             <h1 class="header-title mb-1">
                 <i class="fas fa-ticket-alt me-2"></i>Sistema de Turnos
             </h1>
-            <p class="header-subtitle mb-0">Centro Tecnológico Ricardo Morales Avilèz</p>
+            <p class="header-subtitle mb-0">Centro Tecnológico Ricardo Morales Avilés</p>
         </div>
 
         <div class="content-container">
-            <div class="current-turn-card pulse">
+            <div class="current-turn-card"> <!-- Eliminada la clase 'pulse' -->
                 <div class="card-header-custom text-center">
                     <h2 class="card-title-custom">
                         <i class="fas fa-star me-2"></i>TURNO ACTUAL
@@ -391,23 +383,13 @@
                     </div>
                 </div>
             </div>
-
-            <div class="next-turn-card">
-                <div class="card-header-custom text-white text-center py-2">
-                    <h4 class="card-title-custom mb-0">
-                        <i class="fas fa-forward me-2"></i>Próximo Turno
-                    </h4>
-                </div>
-                <div class="card-body text-center py-3">
-                    <div class="next-turn-number" id="proximo-turno">1</div>
-                </div>
             </div>
         </div>
         
         <div class="status-bar">
             <div><i class="fas fa-clock me-1"></i> <span id="current-time">00:00:00</span></div>
             <div class="marquee">
-                <span>Bienvenidos al Centro Tecnológico Ricardo Morales Avilèz • Por favor espere su turno •</span>
+                <span>Bienvenidos al Centro Tecnológico Ricardo Morales Avilés • Por favor espere su turno •</span>
             </div>
             <div><i class="fas fa-user me-1"></i> <span id="current-date">01/01/2023</span></div>
         </div>
