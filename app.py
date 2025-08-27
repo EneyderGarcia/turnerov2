@@ -9,7 +9,11 @@ app = Flask(__name__)
 
 DATABASE_URL = os.getenv('DATABASE_URL')
 if DATABASE_URL and DATABASE_URL.startswith('postgres://'):
+<<<<<<< HEAD
     #DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+=======
+    #DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+>>>>>>> f9d51cbb6f767222c9862c2733ff442fde8ff930
     DATABASE_URL = DATABASE_URL.replace("postgres://","postgressql://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///turnero.db'
 
@@ -257,6 +261,7 @@ def docente_dashboard():
             .limit(5)\
             .all()
     
+<<<<<<< HEAD
     # Obtener el último turno general del sistema
     ultimo_turno_general = TurnoGeneral.query.order_by(TurnoGeneral.numero_turno.desc()).first()
     ultimo_turno_general_numero = ultimo_turno_general.numero_turno if ultimo_turno_general else 0
@@ -266,6 +271,12 @@ def docente_dashboard():
                          usuario=usuario.to_dict(),
                          ultimos_turnos=ultimos_turnos,
                          ultimo_turno_general=ultimo_turno_general_numero)  # Nuevo parámetro
+=======
+    return render_template('docente/dashboard.html', 
+                         mesa=mesa.to_dict() if mesa else None,
+                         usuario=usuario.to_dict(),
+                         ultimos_turnos=ultimos_turnos)
+>>>>>>> f9d51cbb6f767222c9862c2733ff442fde8ff930
 
 @app.route('/public/turnos')
 def public_turnos():

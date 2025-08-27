@@ -9,7 +9,10 @@
         --success-gradient: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
         --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+<<<<<<< HEAD
         --highlight-color: #e74c3c;
+=======
+>>>>>>> f9d51cbb6f767222c9862c2733ff442fde8ff930
     }
     
     .teacher-header {
@@ -149,6 +152,10 @@
     <div class="teacher-header">
         <div class="d-flex flex-column">
             <h2 class="mb-1"><i class="fas fa-chalkboard-teacher me-2"></i>Panel del Docente</h2>
+<<<<<<< HEAD
+=======
+           
+>>>>>>> f9d51cbb6f767222c9862c2733ff442fde8ff930
         </div>
     </div>
 
@@ -181,7 +188,11 @@
                         </div>
                         
                         <div class="text-center">
+<<<<<<< HEAD
                             <small class="text-muted d-block mb-1 compact-info">Último Turno Avanzado</small>
+=======
+                            <small class="text-muted d-block mb-1 compact-info">Último Turno</small>
+>>>>>>> f9d51cbb6f767222c9862c2733ff442fde8ff930
                             <span class="badge bg-info fs-6 d-block mt-1" id="mi-ultimo-turno">{{ mesa.turno_actual }}</span>
                         </div>
                     </div>
@@ -199,8 +210,13 @@
                 <div class="card-body text-center py-3">
                     <div class="mb-3">
                         <i class="fas fa-ticket-alt small-icon text-success mb-2 floating-icon"></i>
+<<<<<<< HEAD
                         <h5 class="text-success mb-2 compact-info">Último Turno General</h5>
                         <div class="display-4 fw-bold text-success" id="turno-actual-general">{{ ultimo_turno_general }}</div>
+=======
+                        <h5 class="text-success mb-2 compact-info">Turno Actual</h5>
+                        <div class="display-4 fw-bold text-success" id="turno-actual">{{ mesa.turno_actual }}</div>
+>>>>>>> f9d51cbb6f767222c9862c2733ff442fde8ff930
                     </div>
                     
                     <button class="btn btn-primary w-100 mb-2 py-2" onclick="avanzarTurno({{ mesa.id }})">
@@ -323,6 +339,7 @@ function cargarEstadoSistema() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+<<<<<<< HEAD
             // Actualizar el último turno general
             if (data.ultimos_turnos && data.ultimos_turnos.length > 0) {
                 document.getElementById('turno-actual-general').textContent = data.ultimos_turnos[0].numero;
@@ -332,6 +349,12 @@ function cargarEstadoSistema() {
             const miMesa = data.mesas.find(m => m.numero === {{ mesa.numero if mesa else 0 }});
             if (miMesa) {
                 document.getElementById('mi-ultimo-turno').textContent = miMesa.turno_actual;
+=======
+            const miMesa = data.mesas.find(m => m.numero === {{ mesa.numero if mesa else 0 }});
+            if (miMesa) {
+                document.getElementById('mi-ultimo-turno').textContent = miMesa.turno_actual;
+                document.getElementById('turno-actual').textContent = miMesa.turno_actual;
+>>>>>>> f9d51cbb6f767222c9862c2733ff442fde8ff930
             }
         }
     })
@@ -340,6 +363,7 @@ function cargarEstadoSistema() {
     });
 }
 
+<<<<<<< HEAD
 // Función para obtener el último turno general (pantalla pública)
 function obtenerUltimoTurnoGeneral() {
     fetch('/api/ultimo_turno')
@@ -371,6 +395,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // También mantener el intervalo para el estado del sistema
     setInterval(cargarEstadoSistema, 5000);
 });
+=======
+cargarEstadoSistema();
+setInterval(cargarEstadoSistema, 5000);
+>>>>>>> f9d51cbb6f767222c9862c2733ff442fde8ff930
 
 function avanzarTurno(mesaId) {
     fetch(`/api/siguiente_turno/${mesaId}`, {
@@ -382,11 +410,15 @@ function avanzarTurno(mesaId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+<<<<<<< HEAD
             // Actualizar el último turno de mi mesa
             document.getElementById('mi-ultimo-turno').textContent = data.nuevo_turno;
             
             // También actualizar el turno general (ya que se creó un nuevo turno)
             obtenerUltimoTurnoGeneral();
+=======
+            cargarEstadoSistema();
+>>>>>>> f9d51cbb6f767222c9862c2733ff442fde8ff930
             
             Swal.fire({
                 icon: 'success',
