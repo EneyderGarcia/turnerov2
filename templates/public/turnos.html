@@ -12,11 +12,11 @@
         :root {
             --primary-color: #2c3e50;
             --accent-color: #3498db;
-            --highlight-color: #e74c3c;
+            --highlight-color: #0066cc; 
             --next-turn-color: #27ae60;
             --text-light: #ffffff;
-            --text-dark: #2c3e50;
-            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-dark: #2baa5c;
+            --card-bg: rgba(165, 154, 154, 0);
             --header-bg: #2c3e50;
         }
         
@@ -27,7 +27,7 @@
             height: 100%;
             overflow: hidden;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: url('../../static/imagenes/imagen.jpg') no-repeat center center fixed;
+            background: url('../../static/imagenes/fondo.jpg') no-repeat center center fixed;
             background-size: cover;
             position: relative;
         }
@@ -75,69 +75,55 @@
             opacity: 0.9;
         }
         
+        .turno-title-container {
+            background: rgba(52, 152, 219, 0.7);
+            padding: 0.8rem 0;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 10;
+            backdrop-filter: blur(5px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .turno-title {
+            margin: 0;
+            font-weight: 700;
+            font-size: 2.2rem;
+            color: var(--text-light);
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
         .content-container {
             flex: 1;
             display: flex;
             justify-content: center;
-            align-items: center;
-            padding: 2rem;
+            align-items: flex-end;
+            padding: 0.5rem 2rem 2rem;
             width: 100%;
-        }
-        
-        .side-images {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            max-width: 1600px;
-            align-items: flex-start; 
-            height: 100%;
-        }
-        
-        .side-image {
-            width: 500px;
-            height: 650px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            object-fit: contain; 
-            align-self: center;
-            aspect-ratio: 5/5; 
-            transition: transform 0.3s ease;
-            background-color: #f8f9fa; 
         }
         
         .main-content {
-            flex: 1;
+            width: 100%;
             max-width: 1000px;
-            margin: 0 0.5rem; 
-            margin-top: 0%; 
+            display: flex;
+            justify-content: center;
+            margin-top: 10rem;
         }
         
         .current-turn-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            border: none;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+            background: transparent; 
+            border: none; 
+            box-shadow: none;
             width: 100%;
+            max-width: 900px;
             margin-bottom: 2rem;
             overflow: hidden;
             transition: all 0.4s ease;
             height: 100%;
             display: flex;
             flex-direction: column;
-        }
-        
-        .card-header-custom {
-            background: var(--accent-color) !important;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 1.2rem;
-        }
-        
-        .card-title-custom {
-            margin: 0;
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: var(--text-light);
-            text-align: center;
+            backdrop-filter: none;
         }
         
         .turn-display {
@@ -147,7 +133,7 @@
             align-items: center;
             padding: 2rem 1rem;
             flex: 1;
-            background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+            min-height: 380px;
         }
         
         .turn-number {
@@ -155,20 +141,34 @@
             margin: 0;
             line-height: 1;
             transition: all 0.5s ease;
-            font-size: 0vw; 
+            font-size: 20vw;
             color: var(--highlight-color);
-            text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3),
+                         0 0 20px rgba(255, 255, 255, 0.4);
+            /* Nuevas propiedades para el borde con sombra */
+            padding: 0.1em;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.6),
+                        0 0 40px rgba(52, 152, 219, 0.5),
+                        inset 0 0 20px rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
         
         .info-text {
             font-weight: 800; 
             margin: 1.5rem 0;
-            font-size: 0rem; 
-            color: var(--primary-color);
-            background: rgba(255, 255, 255, 0.7);
-            padding: 0.8rem 2rem;
+            font-size: 3.5rem;
+            color: var(--text-light);
+            background: rgba(44, 62, 80, 0.877);
+            padding: 1rem 3rem;
             border-radius: 12px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
         }
         
         .status-bar {
@@ -178,98 +178,68 @@
             width: 100%;
             background: var(--header-bg);
             color: var(--text-light);
-            padding: 0.5rem 1rem;
+            padding: 1.2rem 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1.2rem; 
+            font-size: 1.4rem;
             z-index: 10;
         }
         
-        .marquee {
-            white-space: nowrap;
+        .status-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .status-section:first-child {
+            justify-content: flex-start;
+        }
+        
+        .status-section:last-child {
+            justify-content: flex-end;
+        }
+        
+        .marquee-container {
+            flex: 2;
             overflow: hidden;
-            position: relative;
-            flex-grow: 1;
+            white-space: nowrap;
             margin: 0 1rem;
-            font-size: 1.3rem; 
             text-align: center;
         }
         
-        .marquee span {
+        .marquee-text {
             display: inline-block;
-            padding-left: 100%;
-            animation: marquee 20s linear infinite;
-        }
-        
-        @keyframes marquee {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(-100%, 0); }
+            width: 100%;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 500;
         }
         
         @keyframes highlight {
             0% { 
                 transform: scale(1);
                 color: var(--highlight-color);
+                text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3),
+                             0 0 20px rgba(255, 255, 255, 0.4);
             }
             50% { 
                 transform: scale(1.15);
-                color: #ff6b6b;
-                text-shadow: 0 0 20px rgba(255, 107, 107, 0.4);
+                color: #3498db;
+                text-shadow: 0 0 30px rgba(52, 152, 219, 0.8),
+                             0 0 40px rgba(52, 152, 219, 0.6);
             }
             100% { 
                 transform: scale(1);
                 color: var(--highlight-color);
+                text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3),
+                             0 0 20px rgba(255, 255, 255, 0.4);
             }
         }
         
         .turn-changing {
             animation: highlight 0.8s ease;
-        }
-        
-        @media (max-width: 1800px) {
-            .side-image {
-                width: 450px;
-                height: 600px;
-            }
-            
-            .turn-number {
-                font-size: 18vw;
-            }
-            
-            .info-text {
-                font-size: 3rem;
-            }
-        }
-        
-        @media (max-width: 1600px) {
-            .side-image {
-                width: 400px;
-                height: 550px;
-            }
-            
-            .turn-number {
-                font-size: 20vw;
-            }
-            
-            .info-text {
-                font-size: 2.8rem;
-            }
-        }
-        
-        @media (max-width: 1400px) {
-            .side-image {
-                width: 350px;
-                height: 500px;
-            }
-            
-            .turn-number {
-                font-size: 22vw;
-            }
-            
-            .info-text {
-                font-size: 2.6rem;
-            }
         }
         
         @media (max-width: 1200px) {
@@ -281,13 +251,8 @@
                 font-size: 1.2rem;
             }
             
-            .card-title-custom {
-                font-size: 1.6rem;
-            }
-            
-            .side-image {
-                width: 300px;
-                height: 450px;
+            .turno-title {
+                font-size: 2rem;
             }
             
             .turn-number {
@@ -295,42 +260,45 @@
             }
             
             .info-text {
-                font-size: 2.4rem;
+                font-size: 2.8rem;
+            }
+            
+            .status-bar {
+                font-size: 1.3rem;
+                padding: 1.1rem;
+            }
+            
+            .marquee-text {
+                font-size: 1.4rem;
             }
         }
         
         @media (max-width: 992px) {
-            .side-images {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .side-image {
-                width: 400px;
-                height: 250px;
-                margin: 1rem 0;
-            }
-            
-            .side-image.left {
-                order: 1;
-            }
-            
-            .main-content {
-                order: 2;
-                margin: 1rem 0;
-                margin-top: 0;
-            }
-            
-            .side-image.right {
-                order: 3;
-            }
-            
             .turn-number {
                 font-size: 22vw;
             }
             
             .info-text {
                 font-size: 2.5rem;
+                padding: 0.8rem 2rem;
+            }
+            
+            .turno-title {
+                font-size: 1.8rem;
+            }
+            
+            .turn-display {
+                padding: 1.5rem 1rem;
+                min-height: 320px;
+            }
+            
+            .status-bar {
+                font-size: 1.2rem;
+                padding: 1rem;
+            }
+            
+            .marquee-text {
+                font-size: 1.3rem;
             }
         }
         
@@ -343,38 +311,53 @@
                 font-size: 1.1rem;
             }
             
-            .card-title-custom {
-                font-size: 1.4rem;
-            }
-            
-            .side-image {
-                width: 320px;
-                height: 200px;
+            .turno-title {
+                font-size: 1.6rem;
             }
             
             .turn-number {
                 font-size: 26vw;
+                box-shadow: 0 0 15px rgba(255, 255, 255, 0.5),
+                        0 0 25px rgba(52, 152, 219, 0.4),
+                        inset 0 0 15px rgba(255, 255, 255, 0.2);
             }
             
             .info-text {
                 font-size: 2.2rem;
+                padding: 0.6rem 1.5rem;
+                margin: 1rem 0;
             }
             
             .turn-display {
-                padding: 1.5rem 0.8rem;
-                min-height: 25vh;
+                padding: 1rem 0.8rem;
+                min-height: 250px;
             }
             
             .content-container {
-                padding: 1.5rem;
+                padding: 0.5rem 1.5rem 1.5rem;
             }
             
             .status-bar {
-                font-size: 1.1rem; 
+                font-size: 1.1rem;
+                flex-direction: column;
+                padding: 0.8rem;
             }
             
-            .marquee {
-                font-size: 1.1rem; 
+            .status-section {
+                margin: 0.2rem 0;
+                width: 100%;
+                justify-content: center !important;
+            }
+            
+            .marquee-container {
+                order: -1;
+                width: 100%;
+                margin: 0.5rem 0;
+            }
+            
+            .marquee-text {
+                font-size: 1.2rem;
+                white-space: normal;
             }
         }
         
@@ -387,35 +370,31 @@
                 font-size: 1rem;
             }
             
-            .card-title-custom {
-                font-size: 1.2rem;
-            }
-            
-            .side-image {
-                width: 280px;
-                height: 180px;
+            .turno-title {
+                font-size: 1.4rem;
             }
             
             .turn-number {
                 font-size: 32vw;
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.4),
+                        0 0 15px rgba(52, 152, 219, 0.3),
+                        inset 0 0 10px rgba(255, 255, 255, 0.15);
+                border: 1px solid rgba(255, 255, 255, 0.15);
             }
             
             .info-text {
-                font-size: 2rem;
-                padding: 0.6rem 1.2rem;
+                font-size: 1.8rem;
+                padding: 0.5rem 1rem;
+                margin: 0.8rem 0;
             }
             
             .status-bar {
-                flex-direction: column;
-                text-align: center;
-                padding: 0.5rem;
-                font-size: 1rem; 
+                padding: 0.7rem;
+                font-size: 1rem;
             }
             
-            .marquee {
-                margin: 0.3rem 0;
-                width: 100%;
-                font-size: 1rem; 
+            .marquee-text {
+                font-size: 1.1rem;
             }
         }
     </style>
@@ -429,36 +408,38 @@
             <p class="header-subtitle mb-0">Centro Tecnológico Ricardo Morales Avilés</p>
         </div>
 
+        <div class="turno-title-container text-center">
+            <h2 class="turno-title">
+                <i class="fas fa-star me-2"></i>TURNO ACTUAL
+            </h2>
+        </div>
+
         <div class="content-container">
-            <div class="side-images">
-                <img src="../../static/imagenes/img1.jpg" class="side-image left">
-                
-                <div class="main-content">
-                    <div class="current-turn-card">
-                        <div class="card-header-custom text-center">
-                            <h2 class="card-title-custom">
-                                <i class="fas fa-star me-2"></i>TURNO ACTUAL
-                            </h2>
-                        </div>
-                        <div class="card-body turn-display">
-                            <div id="turno-actual" class="w-100 text-center">
-                                <div class="turn-number mb-2" id="numero-turno">0</div>
-                                
-                                <div class="info-text mb-2" id="mesa-info">Esperando primer turno...</div>
-                            </div>
+            <div class="main-content">
+                <div class="current-turn-card">
+                    <div class="card-body turn-display">
+                        <div id="turno-actual" class="w-100 text-center">
+                            <div class="turn-number mb-2" id="numero-turno">0</div>
+                            
+                            <div class="info-text mb-2" id="mesa-info">Esperando primer turno...</div>
                         </div>
                     </div>
                 </div>
-                <img src="../../static/imagenes/imagen2.jpg" class="side-image right">
             </div>
         </div>
         
         <div class="status-bar">
-            <div><i class="fas fa-clock me-1"></i> <span id="current-time">00:00:00</span></div>
-            <div class="marquee">
-                <div>  Bienvenidos al Centro Tecnológico Ricardo Morales Avilés • Por favor espere su turno •</div>
+            <div class="status-section">
+                <i class="fas fa-clock me-1"></i> <span id="current-time">00:00:00</span>
             </div>
-            <div><i class="fas fa-user me-1"></i> <span id="current-date">01/01/2023</span></div>
+            
+            <div class="marquee-container">
+                <div class="marquee-text">Bienvenidos al Centro Tecnológico Ricardo Morales Avilés • Por favor espere su turno</div>
+            </div>
+            
+            <div class="status-section">
+                <i class="fas fa-user me-1"></i> <span id="current-date">01/01/2023</span>
+            </div>
         </div>
     </div>
 
@@ -520,27 +501,7 @@
                 
             } catch (e) {
                 console.log('Error reproduciendo campanita:', e);
-                
-                try {
-                    const audio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ==');
-                    audio.play();
-                } catch (err) {
-                    console.log('Error en fallback de audio:', err);
-                }
             }
-        }
-
-        function actualizarPantalla() {
-            fetch('/api/estado_sistema')
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById('proximo-turno').textContent = data.proximo_turno;
-                }
-            })
-            .catch(error => {
-                console.error('Error al cargar estado del sistema:', error);
-            });
         }
 
         function actualizarTurnoActual() {
@@ -583,11 +544,33 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             inicializarAudio();
-            actualizarPantalla();
             actualizarTurnoActual();
-
-            setInterval(actualizarPantalla, 3000);
             setInterval(actualizarTurnoActual, 3000);
+            
+            function adjustFontSizes() {
+                const turnoElement = document.getElementById('numero-turno');
+                const container = document.querySelector('.turn-display');
+                
+                if (container && turnoElement) {
+                    const containerHeight = container.clientHeight;
+                    const turnoHeight = turnoElement.clientHeight;
+                    const infoElement = document.getElementById('mesa-info');
+                    
+                    if (turnoHeight > containerHeight * 0.7) {
+                        const currentFontSize = parseFloat(window.getComputedStyle(turnoElement).fontSize);
+                        const newSize = Math.min(currentFontSize, containerHeight * 0.5);
+                        turnoElement.style.fontSize = newSize + 'px';
+                    }
+                    
+                    if (infoElement && infoElement.clientHeight > containerHeight * 0.3) {
+                        const currentInfoSize = parseFloat(window.getComputedStyle(infoElement).fontSize);
+                        infoElement.style.fontSize = (currentInfoSize * 0.9) + 'px';
+                    }
+                }
+            }
+            
+            window.addEventListener('resize', adjustFontSizes);
+            setTimeout(adjustFontSizes, 100);
         });
     </script>
 </body>
