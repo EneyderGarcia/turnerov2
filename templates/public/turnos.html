@@ -27,7 +27,20 @@
             height: 100%;
             overflow: hidden;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #2c3e50 0%, #4a6580 100%);
+            background: url('../../static/imagenes/imagen.jpg') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(44, 62, 80, 0.85); 
+            z-index: -1;
         }
         
         .main-container {
@@ -65,11 +78,38 @@
         .content-container {
             flex: 1;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 2rem;
             width: 100%;
+        }
+        
+        .side-images {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1600px; /* Aumentado para imágenes más grandes */
+            align-items: flex-start; /* Alineación arriba para subir la casilla */
+            height: 100%;
+        }
+        
+        .side-image {
+            width: 500px;
+            height: 650px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            object-fit: contain; 
+            align-self: center;
+            aspect-ratio: 5/5; 
+            transition: transform 0.3s ease;
+            background-color: #f8f9fa; /* Fondo para espacios vacíos si la imagen no llena el contenedor */
+        }
+        
+        .main-content {
+            flex: 1;
+            max-width: 1000px;
+            margin: 0 0.5rem; /* Aumentado el margen para imágenes más grandes */
+            margin-top: 0%; /* Sube la casilla de turno actual */
         }
         
         .current-turn-card {
@@ -78,10 +118,12 @@
             border: none;
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
             width: 100%;
-            max-width: 1000px;
             margin-bottom: 2rem;
             overflow: hidden;
             transition: all 0.4s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
         
         .card-header-custom {
@@ -104,7 +146,7 @@
             justify-content: center;
             align-items: center;
             padding: 2rem 1rem;
-            min-height: 30vh;
+            flex: 1;
             background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
         }
         
@@ -113,7 +155,7 @@
             margin: 0;
             line-height: 1;
             transition: all 0.5s ease;
-            font-size: 25vw; 
+            font-size: 0vw; /* Reducido un poco para compensar el tamaño de imágenes */
             color: var(--highlight-color);
             text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
         }
@@ -121,7 +163,7 @@
         .info-text {
             font-weight: 800; 
             margin: 1.5rem 0;
-            font-size: 4rem; 
+            font-size: 0rem; /* Reducido un poco para compensar el tamaño de imágenes */
             color: var(--primary-color);
             background: rgba(255, 255, 255, 0.7);
             padding: 0.8rem 2rem;
@@ -151,6 +193,7 @@
             flex-grow: 1;
             margin: 0 1rem;
             font-size: 1.3rem; 
+            text-align: center;
         }
         
         .marquee span {
@@ -184,13 +227,48 @@
             animation: highlight 0.8s ease;
         }
         
+        @media (max-width: 1800px) {
+            .side-image {
+                width: 450px;
+                height: 600px;
+            }
+            
+            .turn-number {
+                font-size: 18vw;
+            }
+            
+            .info-text {
+                font-size: 3rem;
+            }
+        }
+        
+        @media (max-width: 1600px) {
+            .side-image {
+                width: 400px;
+                height: 550px;
+            }
+            
+            .turn-number {
+                font-size: 20vw;
+            }
+            
+            .info-text {
+                font-size: 2.8rem;
+            }
+        }
+        
         @media (max-width: 1400px) {
+            .side-image {
+                width: 350px;
+                height: 500px;
+            }
+            
             .turn-number {
                 font-size: 22vw;
             }
             
             .info-text {
-                font-size: 3.5rem;
+                font-size: 2.6rem;
             }
         }
         
@@ -207,22 +285,52 @@
                 font-size: 1.6rem;
             }
             
+            .side-image {
+                width: 300px;
+                height: 450px;
+            }
+            
             .turn-number {
-                font-size: 25vw;
+                font-size: 24vw;
             }
             
             .info-text {
-                font-size: 3rem;
+                font-size: 2.4rem;
             }
         }
         
         @media (max-width: 992px) {
+            .side-images {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .side-image {
+                width: 400px;
+                height: 250px;
+                margin: 1rem 0;
+            }
+            
+            .side-image.left {
+                order: 1;
+            }
+            
+            .main-content {
+                order: 2;
+                margin: 1rem 0;
+                margin-top: 0;
+            }
+            
+            .side-image.right {
+                order: 3;
+            }
+            
             .turn-number {
                 font-size: 22vw;
             }
             
             .info-text {
-                font-size: 2.8rem;
+                font-size: 2.5rem;
             }
         }
         
@@ -239,12 +347,17 @@
                 font-size: 1.4rem;
             }
             
+            .side-image {
+                width: 320px;
+                height: 200px;
+            }
+            
             .turn-number {
                 font-size: 26vw;
             }
             
             .info-text {
-                font-size: 2.5rem;
+                font-size: 2.2rem;
             }
             
             .turn-display {
@@ -278,12 +391,17 @@
                 font-size: 1.2rem;
             }
             
+            .side-image {
+                width: 280px;
+                height: 180px;
+            }
+            
             .turn-number {
                 font-size: 32vw;
             }
             
             .info-text {
-                font-size: 2.2rem;
+                font-size: 2rem;
                 padding: 0.6rem 1.2rem;
             }
             
@@ -312,26 +430,33 @@
         </div>
 
         <div class="content-container">
-            <div class="current-turn-card">
-                <div class="card-header-custom text-center">
-                    <h2 class="card-title-custom">
-                        <i class="fas fa-star me-2"></i>TURNO ACTUAL
-                    </h2>
-                </div>
-                <div class="card-body turn-display">
-                    <div id="turno-actual" class="w-100 text-center">
-                        <div class="turn-number mb-2" id="numero-turno">0</div>
-                        
-                        <div class="info-text mb-2" id="mesa-info">Esperando primer turno...</div>
+            <div class="side-images">
+                <img src="../../static/imagenes/img1.jpg" class="side-image left">
+                
+                <div class="main-content">
+                    <div class="current-turn-card">
+                        <div class="card-header-custom text-center">
+                            <h2 class="card-title-custom">
+                                <i class="fas fa-star me-2"></i>TURNO ACTUAL
+                            </h2>
+                        </div>
+                        <div class="card-body turn-display">
+                            <div id="turno-actual" class="w-100 text-center">
+                                <div class="turn-number mb-2" id="numero-turno">0</div>
+                                
+                                <div class="info-text mb-2" id="mesa-info">Esperando primer turno...</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <img src="../../static/imagenes/imagen2.jpg" class="side-image right">
             </div>
         </div>
         
         <div class="status-bar">
             <div><i class="fas fa-clock me-1"></i> <span id="current-time">00:00:00</span></div>
             <div class="marquee">
-                <span>Bienvenidos al Centro Tecnológico Ricardo Morales Avilés • Por favor espere su turno •</span>
+                <div>  Bienvenidos al Centro Tecnológico Ricardo Morales Avilés • Por favor espere su turno •</div>
             </div>
             <div><i class="fas fa-user me-1"></i> <span id="current-date">01/01/2023</span></div>
         </div>
@@ -349,8 +474,7 @@
             document.getElementById('current-time').textContent = now.toLocaleTimeString();
             document.getElementById('current-date').textContent = now.toLocaleDateString();
         }
-        
-        // Actualizar fecha y hora cada segundo
+
         setInterval(updateDateTime, 1000);
         updateDateTime();
 
